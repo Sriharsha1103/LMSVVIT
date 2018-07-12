@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".AppliedLeavesFragment">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/id_card_applied_leaves"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="10dp"
+        app:cardMaxElevation="4dp"
+        app:cardElevation="2dp"
+        >
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/id_recycler_applied_leaves">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

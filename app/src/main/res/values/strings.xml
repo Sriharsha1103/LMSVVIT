@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">LMSVVIT</string>
+    <string name="slide_1_title">Hello !</string>
+    <string name="slide_1_desc">The easiest way to Apply for a Leave!</string>
+    <string name="slide_2_title">LMSVVIT</string>
+    <string name="slide_2_desc">Track your leaves</string>
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="title_activity_home">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="leaves_available">No. of Casual Leaves Available : </string>
+    <string name="sick_available">No. of Sick Leaves Available : </string>
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="sick_used">No. of Sick Leaves Used : </string>
+    <string name="leaves_used">No. of Leaves Used : </string>
+
+</resources>

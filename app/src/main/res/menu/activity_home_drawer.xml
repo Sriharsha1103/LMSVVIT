@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@mipmap/ic_home"
+            android:title="Home"/>
+        <item
+            android:id="@+id/nav_personal_info"
+            android:icon="@mipmap/ic_person"
+            android:title="Personal Information" />
+        <item
+            android:id="@+id/nav_applied_leaves"
+            android:icon="@mipmap/ic_list"
+            android:title="Leaves Applied" />
+        <item
+            android:id="@+id/nav_leaves_summary"
+            android:icon="@mipmap/ic_list_summary"
+            android:title="Leaves Summary" />
+        <item
+            android:id="@+id/nav_leave_applications"
+            android:icon="@mipmap/ic_list_add"
+            android:title="Leave Applications" />
+    </group>
+</menu>
