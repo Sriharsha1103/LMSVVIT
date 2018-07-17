@@ -89,8 +89,8 @@ public class LMSWidgetConfigureActivity extends Activity implements LoaderManage
     public void loadWidget(){
         final Context context = LMSWidgetConfigureActivity.this;
 
-           saveTitlePref(context, mAppWidgetId, name);
-            saveLeavePref(context,mAppWidgetId,result);
+        saveTitlePref(context, mAppWidgetId, name);
+        saveLeavePref(context,mAppWidgetId,result);
 
         // It is the responsibility of the configuration activity to update the app widget
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -110,8 +110,8 @@ public class LMSWidgetConfigureActivity extends Activity implements LoaderManage
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
 
-       dialog = new ProgressDialog(this);
-       firebaseUtils = new FirebaseUtils(this, (DatabaseReference) null);
+        dialog = new ProgressDialog(this);
+        firebaseUtils = new FirebaseUtils(this, (DatabaseReference) null);
         // Find the widget id from the intent.
 
         prefManager=new PrefManager(this);
@@ -141,10 +141,38 @@ public class LMSWidgetConfigureActivity extends Activity implements LoaderManage
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        StringBuilder builder = new StringBuilder();
                         Employee employee = dataSnapshot1.getValue(Employee.class);
                         if (emailId.equals(employee.getEmailId())) {
+
+                            if (employee.getDesignation().equalsIgnoreCase("HOD")) {
+                                Log.i("Widget", "Hod");
+                                builder.append("List of Staff with Balance Leaves:\n");
+                                for(DataSnapshot dataSnapshot2:dataSnapshot.getChildren()) {
+                                    Employee employee1 = dataSnapshot2.getValue(Employee.class);
+                                    builder.append(employee1.getName());
+                                    builder.append(":-\n");
+                                    int leave_count = employee1.getLeaves().getcls();
+                                    int sick_count = employee1.getLeaves().getsls();
+                                    builder.append(getString(R.string.cl_balance) + leave_count);
+                                    builder.append("\n");
+                                    builder.append(getString(R.string.sl_balance) + sick_count);
+                                    builder.append("\n");
+                                    if (employee1.getGender().equals(getString(R.string.female))) {
+                                        int maternity_count = employee1.getLeaves().getsls();
+                                        builder.append(getString(R.string.ml_balance) + maternity_count);
+                                        builder.append("\n");
+                                    }
+                                }
+                            }
+                            result = builder.toString();
+                            loadWidget();
+                            break;
+                        }
+                        else {
+                            Log.i("Widget","Not Hod");
+
                             name = employee.getName();
-                            StringBuilder builder = new StringBuilder();
                             int leave_count = employee.getLeaves().getcls();
                             int leave_balance = 15 - leave_count;
                             int sick_count = employee.getLeaves().getsls();
@@ -164,15 +192,11 @@ public class LMSWidgetConfigureActivity extends Activity implements LoaderManage
                                 builder.append("\n");
                                 builder.append(getString(R.string.ml_used) + maternity_balance);
                             }
-                            if(employee.getDesignation().equals(getString(R.string.hod))){
-                                Date date = new Date();
-                                String today = date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getYear()+1900;
-
-                            }
                             result = builder.toString();
                             loadWidget();
                             break;
                         }
+
                     }
 
                 }
@@ -199,7 +223,7 @@ public class LMSWidgetConfigureActivity extends Activity implements LoaderManage
             @Override
             protected void onStartLoading() {
                 if(result==null)
-                forceLoad();
+                    forceLoad();
                 else
                     deliverResult(result);
 

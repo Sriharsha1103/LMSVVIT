@@ -26,11 +26,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.ads.mediation.AbstractAdViewAdapter;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,7 +35,6 @@ import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.utils.FirebaseUtils;
 import com.vvit.aammu.lmsvvit.utils.PrefManager;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class HomeActivity extends AppCompatActivity
@@ -257,7 +251,7 @@ public class HomeActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.id_frame_layout,fragment);
         fragmentTransaction.addToBackStack("Fragment");
         fragmentTransaction.commit();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

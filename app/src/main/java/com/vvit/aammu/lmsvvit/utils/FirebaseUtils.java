@@ -277,7 +277,6 @@ public class FirebaseUtils {
                             for (int i = 1; i < leaves.size(); i++) {
                                 if (leaves.get(i).getStatus().equals(Leave.Status.APPLIED)) {
                                     String title = employee.getName();
-                                    Log.i("FIrebaseUtils", title);
                                     String body = "Applied leave for " + leaves.get(i).getNoOfDays() + " days";
                                     MyNotificationManager.getInstance(activity, employee).displayNotification(title, body);
                                 }
