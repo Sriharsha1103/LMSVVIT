@@ -36,6 +36,8 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.employeeList = employeeList;
         this.activity = activity;
         this.listener = listener;
+
+        Log.i("ELA","EmployeeList"+employeeList.size());
         //viewPool = new RecyclerView.RecycledViewPool();
     }
 
@@ -60,6 +62,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
+
         return employeeList.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -85,14 +88,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             firebaseUtils = new FirebaseUtils(activity,adapter);
             setUpAdapter(employee);
 
-            adapter = new MyAdapter(activity, leavesList, new MyAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClickListener(Leave leave) {
-                    listener.onItemClickListener(leave);
-                }
-            });
-
-        }
+            }
         private void setUpAdapter(final Employee employee) {
             if (firebaseUtils.checkNetwork()) {
                 mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
@@ -115,7 +111,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                                 if (leave.getStatus().equals(Leave.Status.ACCEPTED)) {
                                                     leavesList.add(leave);
                                                     adapter.notifyDataSetChanged();
-                                                    Log.i("ELA",""+leavesList.size());
+                                                    Log.i("ELA","LeaveList"+leavesList.size());
                                                     leavesList.get(childCount-1).display();
                                                 }
 

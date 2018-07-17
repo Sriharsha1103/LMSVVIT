@@ -4,27 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".HomeFragment"
-    android:layout_gravity="center">
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        ads:adSize="BANNER"
-        android:layout_gravity="top|center"
-        android:foregroundGravity="top"
-        ads:adUnitId="@string/home_footer"/>
-
+    tools:context=".HomeFragment">
     <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         app:cardElevation="@dimen/card_view_elevation"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
-        app:cardMaxElevation="@dimen/card_view_max_elevation"
-        android:layout_gravity="center">
+        app:cardMaxElevation="@dimen/card_view_max_elevation">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -133,6 +122,15 @@
         app:srcCompat="@drawable/ic_add"
         tools:ignore="VectorDrawableCompat"
         android:elevation="@dimen/card_view_max_elevation"/>
+
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:visibility="visible"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/home_footer" />
 
 
 </FrameLayout>

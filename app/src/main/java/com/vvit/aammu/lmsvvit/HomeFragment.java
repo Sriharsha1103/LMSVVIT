@@ -121,6 +121,7 @@ public class HomeFragment extends Fragment {
         if(employee.getDesignation().equalsIgnoreCase("HOD")){
             layout.setVisibility(GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            fab.setVisibility(GONE);
             setAdapter();
         }
         else{
