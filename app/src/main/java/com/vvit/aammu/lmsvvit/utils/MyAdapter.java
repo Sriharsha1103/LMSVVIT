@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.vvit.aammu.lmsvvit.R;
+import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.model.Leave;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import butterknife.ButterKnife;
 public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Activity activity;
     private List<Leave> leave;
+    private Employee employee;
     private OnItemClickListener listener;
 
     public MyAdapter(Activity activity, List<Leave> leave, OnItemClickListener listener) {
@@ -27,6 +29,13 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.leave = leave;
         this.listener = listener;
 
+    }
+
+    public MyAdapter(Activity activity, List<Leave> leave, Employee employee, OnItemClickListener listener) {
+        this.activity = activity;
+        this.leave = leave;
+        this.employee = employee;
+        this.listener = listener;
     }
 
     public interface OnItemClickListener{
@@ -89,6 +98,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             text = noOfDaysApplied.getText().toString();
             noOfDaysApplied.setText(text+" "+String.valueOf(currentLeave.getNoOfDays()));
             itemView.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     listener.onItemClickListener(currentLeave);

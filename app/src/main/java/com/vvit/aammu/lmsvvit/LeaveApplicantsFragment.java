@@ -90,11 +90,10 @@ public class LeaveApplicantsFragment extends Fragment {
                                     adapter.notifyDataSetChanged();
                                     Log.i("FirebaseUtils - "," "+i);
                                 }
-/*
                                 if (employeeList.size() <= 0) {
                                     Toast.makeText(getActivity(), "No Faculty Applied for Leaves", Toast.LENGTH_SHORT).show();
                                     getActivity().getSupportFragmentManager().popBackStack();
-                                }*/
+                                }
                             }
                         }
                         j++;
@@ -179,5 +178,11 @@ public class LeaveApplicantsFragment extends Fragment {
         if(fragment!=null)
             getChildFragmentManager().putFragment(outState,"ApplicantsFragment",fragment);
 
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 }

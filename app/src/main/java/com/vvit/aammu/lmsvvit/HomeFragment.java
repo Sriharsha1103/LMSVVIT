@@ -31,6 +31,7 @@ import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.model.Leave;
 import com.vvit.aammu.lmsvvit.model.Leaves;
 import com.vvit.aammu.lmsvvit.utils.ApplicantAdapter;
+import com.vvit.aammu.lmsvvit.utils.EmployeeListAdapter;
 import com.vvit.aammu.lmsvvit.utils.FirebaseUtils;
 import com.vvit.aammu.lmsvvit.utils.MyAdapter;
 
@@ -54,7 +55,7 @@ public class HomeFragment extends Fragment {
     LinearLayout layout;
     AdView adView;
     FirebaseUtils firebaseUtils;
-   ApplicantAdapter adapter;
+    EmployeeListAdapter adapter;
     private DatabaseReference mFirebaseDatabase;
     private Employee employee;
     private List<Employee> employeeList;
@@ -80,7 +81,7 @@ public class HomeFragment extends Fragment {
         View view= inflater.inflate(R.layout.fragment_home, container, false);
         Bundle bundle=getArguments();
         name = view.findViewById(R.id.id_home_name);
-        firebaseUtils = new FirebaseUtils(getActivity(),adapter);
+        firebaseUtils = new FirebaseUtils(getActivity(), (DatabaseReference) null);
         layout = view.findViewById(R.id.id_content_layout);
         mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
         casualLeaves = view.findViewById(R.id.id_casual_available);
@@ -145,15 +146,14 @@ public class HomeFragment extends Fragment {
                             for (int i = 1; i < leaves.size(); i++) {
                                 if (leaves.get(i).getStatus().equals(Leave.Status.ACCEPTED)){
                                     employeeList.add(employee);
-
                                     adapter.notifyDataSetChanged();
-                                    Log.i("FirebaseUtils - "," "+i);
+                                    break;
                                 }
-/*
+
                                 if (employeeList.size() <= 0) {
                                     Toast.makeText(getActivity(), "No Faculty Applied for Leaves", Toast.LENGTH_SHORT).show();
                                     getActivity().getSupportFragmentManager().popBackStack();
-                                }*/
+                                }
                             }
                         }
                         j++;
@@ -169,49 +169,14 @@ public class HomeFragment extends Fragment {
         else
             Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         Log.i("FirebaseUtils","Calling Adapter");
-        adapter = new ApplicantAdapter(getActivity(), employeeList, new ApplicantAdapter.OnItemClickListener() {
+        adapter = new EmployeeListAdapter(employeeList,getActivity(), new EmployeeListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClickListener(Employee employee,Leave leave ) {
-                displayLeave(employee);
-                HomeFragment.this.employee = employee;
+            public void onItemClickListener(Leave leave) {
+
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-    }
-    private void displayLeave(Employee employee) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.employee_list_leaves,null);
-
-        builder.setView(view);
-        /*builder.setTitle("Leave Applied on "+leave.getAppliedDate());
-        TextView appliedDate = view.findViewById(R.id.id_display_days_applied);
-        TextView date = view.findViewById(R.id.id_display_applied_dates);
-        EditText reason = view.findViewById(R.id.id_display_reason);
-        TextView status = view.findViewById(R.id.id_display_status);
-        String text = appliedDate.getText().toString();
-        appliedDate.setText(String.format("%s %s", text, String.valueOf(leave.getNoOfDays())));
-        text = date.getText().toString();
-        date.setText(String.format("%s - %s", text, getDates(leave)));
-        text = reason.getText().toString();
-        reason.setEnabled(false);
-        reason.setText(String.format("%s %s", text, leave.getReason()));
-        text = status.getText().toString();
-        status.setText(String.format("%s %s", text, leave.getStatus().toString()));
-*/
-    }
-
-    private void changeStatus(Leave.Status status) {
-        firebaseUtils.updateStatus(employee,status);
-        getActivity().getSupportFragmentManager().popBackStack();
-    }
-
-    private String getDates(Leave leave) {
-        StringBuilder builder = new StringBuilder();
-        List<String> dates = leave.getDate();
-        builder.append(dates.get(0));
-        builder.append(dates.get(dates.size()-1));
-        return builder.toString();
     }
 
 
@@ -235,5 +200,7 @@ public class HomeFragment extends Fragment {
             getChildFragmentManager().putFragment(outState,"HomeFragment",fragment);
 
     }
+
+
 
 }

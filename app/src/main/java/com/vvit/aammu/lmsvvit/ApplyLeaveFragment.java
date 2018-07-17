@@ -222,4 +222,10 @@ public class ApplyLeaveFragment extends Fragment {
             getChildFragmentManager().putFragment(outState,KEY_FRAGMENT,fragment);
 
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
 }

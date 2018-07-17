@@ -74,7 +74,6 @@ public class AppliedLeavesFragment extends Fragment
     private void setUpAdapter(ViewGroup container) {
         if (firebaseUtils.checkNetwork()) {
             mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
-                Leaves leaves;
                 Employee employee1;
 
                 @Override
@@ -193,4 +192,9 @@ public class AppliedLeavesFragment extends Fragment
 
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
 }
