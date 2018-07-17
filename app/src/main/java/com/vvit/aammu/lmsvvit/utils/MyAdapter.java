@@ -3,16 +3,13 @@ package com.vvit.aammu.lmsvvit.utils;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.vvit.aammu.lmsvvit.R;
-import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.model.Leave;
 
 import java.util.List;
@@ -29,6 +26,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.activity = activity;
         this.leave = leave;
         this.listener = listener;
+
     }
 
     public interface OnItemClickListener{
@@ -65,35 +63,32 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.id_row_image)
         ImageView imageView;
         public ViewHolder(View itemView) {
-             super(itemView);
-             ButterKnife.bind(this,itemView);
+            super(itemView);
+            ButterKnife.bind(this,itemView);
         }
 
         public void bind(final Leave currentLeave, final OnItemClickListener listener) {
             //FirebaseUtils firebaseUtils = new FirebaseUtils(activity,FirebaseDatabase.getInstance().getReference());
-            Log.i("Leave-RecyclerView",""+currentLeave.toString());
             currentLeave.display();
             switch(currentLeave.getStatus()){
                 case APPLIED:
-                    int resID = activity.getResources().getIdentifier("ic_applied", "mipmap",  activity.getPackageName());
-                    imageView.setImageResource(resID);
+                    imageView.setImageResource(R.drawable.ic_visibility_off);
                     break;
                 case ACCEPTED:
-                    resID = activity.getResources().getIdentifier("ic_accpeted", "mipmap",  activity.getPackageName());
-                    imageView.setImageResource(resID);
+                    imageView.setImageResource(R.drawable.ic_accept);
                     break;
                 case REJECTED:
-                    resID = activity.getResources().getIdentifier("ic_rejected", "mipmap",  activity.getPackageName());
-                    imageView.setImageResource(resID);
+                    imageView.setImageResource(R.drawable.ic_reject);
                     break;
                 case PENDING:
-                    resID = activity.getResources().getIdentifier("ic_pending", "mipmap",  activity.getPackageName());
-                    imageView.setImageResource(resID);
+                    imageView.setImageResource(R.drawable.ic_visibility_black_24dp);
                     break;
             }
-            appliedDates.setText(currentLeave.getAppliedDate());
-            noOfDaysApplied.setText(String.valueOf(currentLeave.getNoOfDays()));
-            imageView.setOnClickListener(new View.OnClickListener() {
+            String text = appliedDates.getText().toString();
+            appliedDates.setText(text+ " "+currentLeave.getAppliedDate());
+            text = noOfDaysApplied.getText().toString();
+            noOfDaysApplied.setText(text+" "+String.valueOf(currentLeave.getNoOfDays()));
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onItemClickListener(currentLeave);

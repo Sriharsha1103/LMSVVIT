@@ -19,49 +19,71 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.vvit.aammu.lmsvvit.HomeActivity;
 import com.vvit.aammu.lmsvvit.LoadingActivity;
+import com.vvit.aammu.lmsvvit.R;
 import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.model.Leave;
 import com.vvit.aammu.lmsvvit.model.Leaves;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseUtils {
 
-    private final DatabaseReference mFirebaseDatabase;
+    private static final String KEY_EMPLOYEE = "employee";
+    private static final String KEY_CLS = "cls";
+    private static final String KEY_SLS = "sls";
+    private static final String KEY_MLS = "mls";
+    private final DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
     private Employee employee;
     private Activity activity;
-    private long count=0;
+    private long count = 0;
     private long employeeCount;
+    private static final String KEY_NAME = "name";
+    private static final String KEY_DESIGNATION = "designation";
+    private static final String KEY_DEPARTMENT = "department";
+    private static final String KEY_LEAVE = "leave";
+    private static final String KEY_LEAVES = "leaves";
+    private static final String KEY_LEAVES_LIST = "leaves/leave";
 
-    public FirebaseUtils(Activity activity,DatabaseReference databaseReference){
+    public FirebaseUtils() {
+    }
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
+    Boolean flag;
+    private MyAdapter adapter;
+
+    public FirebaseUtils(Activity activity, ApplicantAdapter applicantAdapter) {
+        this.activity = activity;
+        this.applicantAdapter = applicantAdapter;
+    }
+
+    private ApplicantAdapter applicantAdapter;
+
+    public FirebaseUtils(Activity activity, MyAdapter adapter) {
+        this.activity = activity;
+        this.adapter = adapter;
+    }
+
+    public FirebaseUtils(Activity activity, DatabaseReference databaseReference) {
         this.activity = activity;
     }
-    public void updatePersonalInfo(final Employee employee1){
-        if(checkNetwork()){
-            final ProgressDialog progressDialog = new ProgressDialog(activity);
-            progressDialog.setMessage("Uploading Data....");
-            progressDialog.show();
+
+    public void updatePersonalInfo(final Employee employee1) {
+        if (checkNetwork()) {
             employee1.toString();
             mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 Leaves leaves;
+
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    long count = dataSnapshot.getChildrenCount();
-                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
                         employee = data.getValue(Employee.class);
-                        if(employee1.getName().equals(employee.getName())){
-                            employee.setName(employee1.getName());
-                            employee.setGender(employee1.getGender());
-                            employee.setDesignation(employee1.getDesignation());
-                            data.getRef().setValue(employee);
+                        if (employee1.getName().equals(employee.getName())) {
+                            data.getRef().child(KEY_NAME).setValue(employee1.getName());
+                            data.getRef().child(KEY_DESIGNATION).setValue(employee1.getDesignation());
+                            data.getRef().child(KEY_DEPARTMENT).setValue(employee1.getDepartment());
                             break;
                         }
 
                     }
-                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -69,29 +91,25 @@ public class FirebaseUtils {
 
                 }
             });
-        }
-        else
-            Toast.makeText(activity, "No Internet, Check Network Connection", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(activity, R.string.no_internet, Toast.LENGTH_SHORT).show();
     }
-    public void addLeave(final Employee employee1,final Leave leave){
-        Log.i("Fragment","Connected to Firebase");
-        if(checkNetwork()){
+
+    public void addLeave(final Employee employee1, final Leave leave) {
+        if (checkNetwork()) {
             mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data:dataSnapshot.getChildren()){
-                        Log.i("Fragment","Checking");
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
                         employee = data.getValue(Employee.class);
                         employee.toString();
-                        if(employee1.getName().equals(employee.getName())) {
-                            if(data.hasChild("leaves/leave")){
-                                long childCount = data.child("leaves").child("leave").getChildrenCount();
-                                Log.i("Children Count",""+childCount);
+                        if (employee1.getName().equals(employee.getName())) {
+                            if (data.hasChild(KEY_LEAVES_LIST)) {
+                                long childCount = data.child(KEY_LEAVES).child(KEY_LEAVE).getChildrenCount();
                                 childCount++;
-                                Log.i("Children Count++",""+childCount);
-                                data.getRef().child("leaves/leave/"+String.valueOf(childCount)).setValue(leave);
-                            }
-                            data.getRef().child("leaves/leave/1").setValue(leave);
+                                data.getRef().child(KEY_LEAVES_LIST + "/" + String.valueOf(childCount)).setValue(leave);
+                            } else
+                                data.getRef().child(KEY_LEAVES_LIST + "/1").setValue(leave);
                             break;
                         }
 
@@ -103,29 +121,29 @@ public class FirebaseUtils {
 
                 }
             });
-        }
-        else
-            Toast.makeText(activity, "No Internet, Check Network Connection", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(activity, R.string.no_internet, Toast.LENGTH_SHORT).show();
     }
-    public void fetchData(final String emailId){
-        Log.i("Fetch Data","");
-        if(checkNetwork()) {
+
+    public void fetchData(final String emailId) {
+        if (checkNetwork()) {
             final ProgressDialog progressDialog = new ProgressDialog(activity);
-            progressDialog.setMessage("Fetching Data....");
+            progressDialog.setMessage(activity.getString(R.string.fetching_data));
             progressDialog.show();
             mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
                 Leaves leaves;
+
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    int i=0;
+                    int i = 0;
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         employee = data.getValue(Employee.class);
                         assert employee != null;
                         if (emailId.equals(employee.getEmailId())) {
-                            leaves = data.child("leaves").getValue(Leaves.class);
+                            leaves = data.child(KEY_LEAVES).getValue(Leaves.class);
                             employee.setLeaves(leaves);
                             Intent intent = new Intent(activity, HomeActivity.class);
-                            intent.putExtra("employee",employee);
+                            intent.putExtra(KEY_EMPLOYEE, employee);
                             activity.startActivity(intent);
                             activity.finish();
                             break;
@@ -139,26 +157,24 @@ public class FirebaseUtils {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             });
-        }
-        else{
-            Toast.makeText(activity, "No Internet, Check Network Connection", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(activity, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
     }
-    public void checkLogin(final String email, final String password){
-        Log.i("check Loginchc","");
-        if(checkNetwork()) {
+
+    public void checkLogin(final String email, final String password) {
+        if (checkNetwork()) {
             mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
                 Leaves leaves;
+
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     employeeCount = dataSnapshot.getChildrenCount();
-                    Log.i("EmployeeCount"," "+employeeCount);
-                    int i=1;
+                    int i = 1;
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        Log.i("Employee",""+data.getValue());
                         employee = data.getValue(Employee.class);
                         if (employee.getEmailId().equals(email) && employee.getPassword().equals(password)) {
-                            leaves = data.child("leaves").getValue(Leaves.class);
+                            leaves = data.child(KEY_LEAVES).getValue(Leaves.class);
                             employee.setLeaves(leaves);
                             Intent intent = new Intent(activity, LoadingActivity.class);
                             activity.startActivity(intent);
@@ -169,7 +185,7 @@ public class FirebaseUtils {
                         count++;
                     }
                     if (count == employeeCount)
-                        Toast.makeText(activity, "Invalid Username/Password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, R.string.invalid_auth, Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -178,35 +194,48 @@ public class FirebaseUtils {
 
                 }
             });
-        }
-        else
-            Toast.makeText(activity, "No Internet, Check Network Connection", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(activity, R.string.no_internet, Toast.LENGTH_SHORT).show();
     }
-    public List<Leave> getLeaves(final Employee employee){
-        final List<Leave> leavesList = new ArrayList<>();
-        Log.i("Leave Data","");
-        if(checkNetwork()) {
-            mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
-                Leaves leaves;
-                Employee employee1;
+
+    public void updateStatus(final Employee employee, final Leave.Status status) {
+        if (checkNetwork()) {
+            mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    int i=0;
+                    int i = 0;
                     for (final DataSnapshot data : dataSnapshot.getChildren()) {
-                        employee1 = data.getValue(Employee.class);
+                        final Employee employee1 = data.getValue(Employee.class);
                         assert employee1 != null;
-                        if (employee1.getEmailId().equals(employee.getEmailId())) {
-                            if(data.hasChild("leaves/leave")){
-                                data.getRef().child("leaves/leave").addListenerForSingleValueEvent(new ValueEventListener() {
+                        if (employee1.getName().equals(employee.getName())) {
+                            if (data.hasChild(KEY_LEAVES_LIST)) {
+                                data.getRef().child(KEY_LEAVES_LIST).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        int childCount=1;
-                                        Log.i("LeaveCount",""+data.getChildrenCount());
-                                        Log.i("LeaveCount",""+dataSnapshot.getChildrenCount());
-                                        for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
-                                            Leave leave = data.child("leaves/leave").child(String.valueOf(childCount)).getValue(Leave.class);
+                                        int childCount = 1;
+                                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                                            Leave leave = data.child(KEY_LEAVES_LIST).child(String.valueOf(childCount)).getValue(Leave.class);
                                             leave.display();
-                                            leavesList.add(leave);
+                                            if (leave.getStatus().equals(Leave.Status.APPLIED) && status.equals(Leave.Status.ACCEPTED)) {
+                                                if (leave.getLeaveType().equalsIgnoreCase("Casual Leaves")) {
+                                                    int count = employee1.getLeaves().getcls();
+                                                    count = count - leave.getNoOfDays();
+                                                    data.getRef().child(KEY_LEAVES).child(KEY_CLS).setValue(count);
+
+                                                } else if (leave.getLeaveType().equalsIgnoreCase("Sick Leaves")) {
+                                                    count = employee1.getLeaves().getsls();
+                                                    count -= leave.getNoOfDays();
+                                                    data.getRef().child(KEY_LEAVES).child(KEY_SLS).setValue(count);
+
+                                                } else if(leave.getLeaveType().equalsIgnoreCase("Maternity Leaves")){
+                                                    count = employee1.getLeaves().getmls();
+                                                    count -= leave.getNoOfDays();
+                                                    data.getRef().child(KEY_LEAVES).child(KEY_MLS).setValue(count);
+
+                                                }
+                                                data.getRef().child(KEY_LEAVES_LIST).child(String.valueOf(childCount)).child("status").setValue(status);
+
+                                            }
                                             childCount++;
                                         }
                                     }
@@ -221,31 +250,67 @@ public class FirebaseUtils {
                         }
                         i++;
                     }
+                    flag = true;
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    flag = false;
                 }
             });
-        }
-        else{
+        } else {
+            flag = false;
             Toast.makeText(activity, "No Internet, Check Network Connection", Toast.LENGTH_SHORT).show();
         }
-        return leavesList;
     }
-    public boolean checkNetwork(){
+
+    public void getAppliedLeaves() {
+        if (checkNetwork()) {
+            mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int j = 1;
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        Employee employee = dataSnapshot1.getValue(Employee.class);
+                        List<Leave> leaves = employee.getLeaves().getLeave();
+                        if (leaves != null) {
+                            for (int i = 1; i < leaves.size(); i++) {
+                                if (leaves.get(i).getStatus().equals(Leave.Status.APPLIED)) {
+                                    String title = employee.getName();
+                                    Log.i("FIrebaseUtils", title);
+                                    String body = "Applied leave for " + leaves.get(i).getNoOfDays() + " days";
+                                    MyNotificationManager.getInstance(activity, employee).displayNotification(title, body);
+                                }
+                            }
+                        }
+                        j++;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } else
+            Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public boolean checkNetwork() {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = null;
-        if(connectivityManager!=null){
+        if (connectivityManager != null) {
             info = connectivityManager.getActiveNetworkInfo();
         }
-        if(info == null){
+        if (info == null) {
             return false;
         }
         return true;
 
     }
-    public int checkSpeed(){
+
+    public int checkSpeed() {
         @SuppressLint("WifiManagerLeak")
         WifiManager wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
         int linkSpeed = wifiManager.getConnectionInfo().getRssi();

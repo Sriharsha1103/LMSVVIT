@@ -10,23 +10,38 @@
     <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardElevation="6dp"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/card_view_elevation"
         app:cardUseCompatPadding="true"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="@dimen/card_view_corner_radius"
+        app:cardMaxElevation="@dimen/card_view_max_elevation"
         android:layout_gravity="center">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
             android:layout_gravity="center"
             >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/id_home_name"
+                android:textSize="20sp"
+                android:text="@string/welcome"
+                android:textStyle="bold"
+                android:padding="@dimen/padding"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/id_content_layout"
+                android:visibility="gone"
+                android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="8dp">
+                android:layout_margin="@dimen/margin_apply_leave"
+                android:paddingLeft="@dimen/padding">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,7 +56,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="8dp">
+                android:layout_margin="@dimen/margin_apply_leave"
+                android:paddingLeft="@dimen/padding">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -56,7 +72,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="8dp">
+                android:paddingLeft="@dimen/padding"
+                android:layout_margin="@dimen/margin_apply_leave">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -72,7 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="8dp">
+                android:layout_margin="@dimen/margin_apply_leave"
+                android:paddingLeft="@dimen/padding">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -83,32 +101,42 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/id_sick_balance"/>
             </LinearLayout>
+            </LinearLayout>
 
-            <android.support.v7.widget.CardView
+            <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardUseCompatPadding="true"
-                app:cardCornerRadius="10dp">
+                android:id="@+id/id_employee_list"
+                android:visibility="gone">
 
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardUseCompatPadding="true"
-                app:cardCornerRadius="10dp">
-
-            </android.support.v7.widget.CardView>
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@mipmap/ic_add" />
+        app:srcCompat="@drawable/ic_add"
+        tools:ignore="VectorDrawableCompat"
+        android:elevation="@dimen/card_view_max_elevation"/>
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        android:layout_gravity="bottom"
+        ads:adUnitId="@string/home_footer"/>
+    <!--android:layout_marginTop="@dimen/ads_margin_top"
+    android:layout_marginBottom="@dimen/padding"
+    android:layout_marginLeft="@dimen/padding"
+    android:layout_marginRight="@dimen/padding"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    -->
 
 </FrameLayout>

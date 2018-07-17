@@ -11,9 +11,9 @@
         android:layout_height="match_parent"
         android:id="@+id/id_card_applied_leaves"
         app:cardUseCompatPadding="true"
-        app:cardCornerRadius="10dp"
-        app:cardMaxElevation="4dp"
-        app:cardElevation="2dp"
+        app:cardCornerRadius="@dimen/card_view_corner_radius"
+        app:cardMaxElevation="@dimen/card_view_max_elevation"
+        app:cardElevation="@dimen/card_view_elevation"
         >
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"

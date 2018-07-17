@@ -3,6 +3,8 @@ package com.vvit.aammu.lmsvvit;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,6 +43,8 @@ public class PersonalFragment extends Fragment {
     RadioButton female;
     Button save,cancel;
     FirebaseUtils firebaseUtils;
+    private Fragment fragment;
+
     public PersonalFragment() {
     }
 
@@ -54,8 +58,17 @@ public class PersonalFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(fragment==null && savedInstanceState!=null)
+            fragment=this.getChildFragmentManager().getFragment(savedInstanceState,"PersonalFragment");
+
+    }
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(fragment!=null)
+            getChildFragmentManager().putFragment(outState,"PersonalFragment",fragment);
 
     }
 
@@ -109,9 +122,9 @@ public class PersonalFragment extends Fragment {
         return view;
     }
 
-    @Override
+   /* @Override
     public void onDestroy() {
         super.onDestroy();
         getActivity().getSupportFragmentManager().popBackStack();
-    }
+    }*/
 }

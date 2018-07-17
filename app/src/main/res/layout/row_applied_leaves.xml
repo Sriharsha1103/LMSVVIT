@@ -1,45 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView android:layout_width="match_parent"
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardUseCompatPadding="true"
-    app:cardElevation="2dp"
-    app:cardMaxElevation="4dp"
-    app:cardCornerRadius="10dp"
+    app:cardElevation="@dimen/card_view_elevation"
+    app:cardMaxElevation="@dimen/card_view_max_elevation"
+    app:cardCornerRadius="@dimen/card_view_corner_radius"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:weightSum="10">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_margin="8dp">
+            android:layout_margin="@dimen/margin_apply_leave">
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:id="@+id/id_row_leaves_dates_applied"
-                android:textSize="35sp"
-                android:textStyle="bold"/>
+                android:textSize="@dimen/sp20_text_size"
+                android:textColor="@color/colorPrimaryText"
+                android:text="Leave Applied on :"
+                android:textStyle="bold"
+                android:padding="@dimen/padding_small"
+                />
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:id="@+id/id_row_leaves_days_applied"
-                android:textSize="20sp"
-                android:textStyle="italic"/>
+                android:textSize="@dimen/sp20_text_size"
+                android:textColor="@color/colorPrimaryText"
+                android:text="No. of Days applied:"
+                android:textStyle="italic"
+                android:padding="@dimen/padding_small"/>
         </LinearLayout>
         <ImageView
             android:layout_width="0dp"
-            android:layout_weight=".5"
-            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_height="@dimen/img_view_h"
             android:contentDescription="status"
-            android:src="@mipmap/ic_applied"
+            android:src="@drawable/ic_visibility_off"
             android:layout_gravity="center"
             android:id="@+id/id_row_image"/>
     </LinearLayout>

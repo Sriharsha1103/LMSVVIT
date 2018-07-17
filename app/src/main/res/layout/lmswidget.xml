@@ -1,0 +1,25 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/widget_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp20_text_size"
+        android:padding="@dimen/padding"
+        android:id="@+id/id_widget_name"
+        android:textStyle="bold"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/id_widget_leave_balance_casual"
+        android:text="@string/casual_leaves_in_balance"
+        android:padding="@dimen/padding"
+        android:textSize="@dimen/sp20_text_size"
+        android:textColor="@color/colorPrimaryText"/>
+
+</LinearLayout>

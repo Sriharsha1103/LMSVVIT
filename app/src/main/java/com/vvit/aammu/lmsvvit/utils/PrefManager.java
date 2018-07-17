@@ -47,7 +47,7 @@ public class PrefManager {
         editor.apply();
     }
     public String getUserEmail(){
-        return pref.getString(USER_EMAIL,"empty");
+        return pref.getString(USER_EMAIL,"");
     }
 
     public boolean isFirstTimeLogin() {

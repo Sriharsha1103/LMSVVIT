@@ -1,17 +1,44 @@
 package com.vvit.aammu.lmsvvit;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.vvit.aammu.lmsvvit.model.Employee;
+import com.vvit.aammu.lmsvvit.model.Leave;
+import com.vvit.aammu.lmsvvit.model.Leaves;
+import com.vvit.aammu.lmsvvit.utils.ApplicantAdapter;
+import com.vvit.aammu.lmsvvit.utils.FirebaseUtils;
+import com.vvit.aammu.lmsvvit.utils.MyAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
+
+import static android.view.View.GONE;
 
 
 public class HomeFragment extends Fragment {
@@ -19,10 +46,24 @@ public class HomeFragment extends Fragment {
     //@BindView(R.id.id_casual_available)
     TextView casualLeaves,casualBalance;
    // @BindView(R.id.id_sick_available)
-    TextView sickLeaves,sickBalance;
-   // @BindView(R.id.id_permission)
+    TextView sickLeaves,sickBalance,name;
+
+    private static final String KEY_LEAVE_LIST = "leaves/leave";
+    private Fragment fragment;
+    RecyclerView recyclerView;
+    LinearLayout layout;
+    AdView adView;
+    FirebaseUtils firebaseUtils;
+   ApplicantAdapter adapter;
+    private DatabaseReference mFirebaseDatabase;
+    private Employee employee;
+    private List<Employee> employeeList;
+    private List<Leave> leaveList;
+
+    // @BindView(R.id.id_permission)
     public HomeFragment() {
     }
+
 
    public static HomeFragment newInstance(Employee employee) {
         HomeFragment fragment = new HomeFragment();
@@ -32,22 +73,21 @@ public class HomeFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_home, container, false);
         Bundle bundle=getArguments();
+        name = view.findViewById(R.id.id_home_name);
+        firebaseUtils = new FirebaseUtils(getActivity(),adapter);
+        layout = view.findViewById(R.id.id_content_layout);
+        mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
         casualLeaves = view.findViewById(R.id.id_casual_available);
         sickLeaves = view.findViewById(R.id.id_sick_available);
         casualBalance = view.findViewById(R.id.id_casual_balance);
         sickBalance = view.findViewById(R.id.id_sick_balance);
-        final Employee employee = bundle.getParcelable("employee");
+        employee = bundle.getParcelable("employee");
         final Fragment fragment = ApplyLeaveFragment.newInstance(employee);
         casualLeaves.setText(String.valueOf(employee.getLeaves().getcls()));
         sickLeaves.setText(String.valueOf(employee.getLeaves().getsls()));
@@ -55,6 +95,10 @@ public class HomeFragment extends Fragment {
         int casualBal = 15 - Integer.parseInt(casualLeaves.getText().toString());
         casualBalance.setText(String.valueOf(casualBal));
         sickBalance.setText(String.valueOf(sickBal));
+        recyclerView = view.findViewById(R.id.id_employee_list);
+        adView = view.findViewById(R.id.adView);
+        String text = name.getText().toString();
+        name.setText(String.format("%s %s", text, employee.getName()));
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,12 +110,130 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+        MobileAds.initialize(getActivity(),getString(R.string.ad_id));
+        AdRequest request = new AdRequest.Builder()
+                /*.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("1421FAAF4869FCA6B9180D98097BB756")  // An example device ID
+                */
+                .build();
+        adView.loadAd(request);
+        if(employee.getDesignation().equalsIgnoreCase("HOD")){
+            layout.setVisibility(GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            setAdapter();
+        }
+        else{
+            layout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(GONE);
+        }
         return view;
     }
+
+    private void setAdapter() {
+        employeeList = new ArrayList<>();
+        recyclerView.setHasFixedSize(true);
+        if(firebaseUtils.checkNetwork()){
+            mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int j=1;
+                    employeeList.clear();
+                    for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
+                        Employee employee = dataSnapshot1.getValue(Employee.class);
+                        List<Leave> leaves = employee.getLeaves().getLeave();
+                        if(leaves!=null) {
+                            for (int i = 1; i < leaves.size(); i++) {
+                                if (leaves.get(i).getStatus().equals(Leave.Status.ACCEPTED)){
+                                    employeeList.add(employee);
+
+                                    adapter.notifyDataSetChanged();
+                                    Log.i("FirebaseUtils - "," "+i);
+                                }
+/*
+                                if (employeeList.size() <= 0) {
+                                    Toast.makeText(getActivity(), "No Faculty Applied for Leaves", Toast.LENGTH_SHORT).show();
+                                    getActivity().getSupportFragmentManager().popBackStack();
+                                }*/
+                            }
+                        }
+                        j++;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else
+            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        Log.i("FirebaseUtils","Calling Adapter");
+        adapter = new ApplicantAdapter(getActivity(), employeeList, new ApplicantAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClickListener(Employee employee,Leave leave ) {
+                displayLeave(employee);
+                HomeFragment.this.employee = employee;
+            }
+        });
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+    }
+    private void displayLeave(Employee employee) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View view = getActivity().getLayoutInflater().inflate(R.layout.employee_list_leaves,null);
+
+        builder.setView(view);
+        /*builder.setTitle("Leave Applied on "+leave.getAppliedDate());
+        TextView appliedDate = view.findViewById(R.id.id_display_days_applied);
+        TextView date = view.findViewById(R.id.id_display_applied_dates);
+        EditText reason = view.findViewById(R.id.id_display_reason);
+        TextView status = view.findViewById(R.id.id_display_status);
+        String text = appliedDate.getText().toString();
+        appliedDate.setText(String.format("%s %s", text, String.valueOf(leave.getNoOfDays())));
+        text = date.getText().toString();
+        date.setText(String.format("%s - %s", text, getDates(leave)));
+        text = reason.getText().toString();
+        reason.setEnabled(false);
+        reason.setText(String.format("%s %s", text, leave.getReason()));
+        text = status.getText().toString();
+        status.setText(String.format("%s %s", text, leave.getStatus().toString()));
+*/
+    }
+
+    private void changeStatus(Leave.Status status) {
+        firebaseUtils.updateStatus(employee,status);
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    private String getDates(Leave leave) {
+        StringBuilder builder = new StringBuilder();
+        List<String> dates = leave.getDate();
+        builder.append(dates.get(0));
+        builder.append(dates.get(dates.size()-1));
+        return builder.toString();
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(fragment==null && savedInstanceState!=null)
+            fragment=this.getChildFragmentManager().getFragment(savedInstanceState,"HomeFragment");
+
+    }
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(fragment!=null)
+            getChildFragmentManager().putFragment(outState,"HomeFragment",fragment);
+
     }
 
 }
