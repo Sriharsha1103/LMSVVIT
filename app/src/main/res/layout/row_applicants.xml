@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/id_row_status"
-                android:text = "Leave Status"
+                android:text = "@string/leave_status"
                 android:textColor="@color/colorPrimaryText"
                 android:padding="@dimen/padding_small"/>
         </LinearLayout>

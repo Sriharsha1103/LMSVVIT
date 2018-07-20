@@ -1,16 +1,13 @@
 package com.vvit.aammu.lmsvvit;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.model.Leave;
-import com.vvit.aammu.lmsvvit.model.Leaves;
-import com.vvit.aammu.lmsvvit.utils.ApplicantAdapter;
 import com.vvit.aammu.lmsvvit.utils.EmployeeListAdapter;
 import com.vvit.aammu.lmsvvit.utils.FirebaseUtils;
 import com.vvit.aammu.lmsvvit.utils.MyAdapter;
@@ -64,7 +59,7 @@ public class LeavesSummaryFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (fragment == null && savedInstanceState != null)
-            fragment = this.getChildFragmentManager().getFragment(savedInstanceState, "SummaryFragment");
+            fragment = this.getChildFragmentManager().getFragment(savedInstanceState, getString(R.string.summary_frag));
 
     }
 
@@ -72,7 +67,7 @@ public class LeavesSummaryFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (fragment != null)
-            getChildFragmentManager().putFragment(outState, "SummaryFragment", fragment);
+            getChildFragmentManager().putFragment(outState, getString(R.string.summary_frag), fragment);
 
     }
 
@@ -88,7 +83,7 @@ public class LeavesSummaryFragment extends Fragment {
         employee = bundle.getParcelable("employee");
         firebaseUtils = new FirebaseUtils(getActivity(), adapter);
         mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
-        if(employee.getDesignation().equalsIgnoreCase("HOD"))
+        if(employee.getDesignation().equalsIgnoreCase(getString(R.string.hod)))
             setAdapter();
         else
             setUpAdapter();
@@ -111,11 +106,9 @@ public class LeavesSummaryFragment extends Fragment {
                                 if (leaves.get(i).getStatus().equals(Leave.Status.ACCEPTED)){
                                     employeeList.add(employee);
                                     employeeListAdapter.notifyDataSetChanged();
-                                    break;
-                                    //Log.i("FirebaseUtils - "," "+i);
-                                }
+                                    break; }
                                 if (employeeList.size() <= 0) {
-                                    Toast.makeText(getActivity(), "No Faculty Applied for Leaves", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.faculty_applied, Toast.LENGTH_SHORT).show();
                                     getActivity().getSupportFragmentManager().popBackStack();
                                 }
                             }
@@ -131,8 +124,7 @@ public class LeavesSummaryFragment extends Fragment {
             });
         }
         else
-            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-        Log.i("FirebaseUtils","Calling Adapter");
+            Toast.makeText(getActivity(), R.string.no_internet, Toast.LENGTH_SHORT).show();
         employeeListAdapter = new EmployeeListAdapter(employeeList,getActivity(), new EmployeeListAdapter.OnItemClickListener() {
             @Override
             public void onItemClickListener(Leave leave) {
@@ -164,14 +156,12 @@ public class LeavesSummaryFragment extends Fragment {
                                         int childCount = 1;
                                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                                             Leave leave = data.child("leaves/leave").child(String.valueOf(childCount)).getValue(Leave.class);
-                                            leave.display();
-                                            leavesList.add(leave);
+                                           leavesList.add(leave);
                                             childCount++;
                                             adapter.notifyDataSetChanged();
                                         }
-                                        Log.i("Size List summary", "" + leavesList.size());
                                         if (leavesList.size() <= 0) {
-                                            Toast.makeText(getActivity(), "No Leaves Approved/Applied or Rejected", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), R.string.no_leave_approved, Toast.LENGTH_SHORT).show();
                                             getActivity().getSupportFragmentManager().popBackStack();
                                         }
                                     }
@@ -187,7 +177,6 @@ public class LeavesSummaryFragment extends Fragment {
                         }
                         i++;
                     }
-                    Log.i("Leave - ", "OutofLoop");
                 }
 
                 @Override
@@ -195,14 +184,11 @@ public class LeavesSummaryFragment extends Fragment {
                 }
             });
         } else {
-            Toast.makeText(getActivity(), "No Internet, Check Network Connection", Toast.LENGTH_SHORT).show();
-        }
-        //leavesList = firebaseUtils.getLeaves(employee);
-        adapter = new MyAdapter(getActivity(), leavesList, new MyAdapter.OnItemClickListener() {
+            Toast.makeText(getActivity(), R.string.no_internet, Toast.LENGTH_SHORT).show();
+        }adapter = new MyAdapter(getActivity(), leavesList, new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemClickListener(Leave leave) {
                 displayLeave(leave);
-                //Toast.makeText(getActivity(), " "+leave.getNoOfDays(), Toast.LENGTH_SHORT).show();
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -219,15 +205,15 @@ public class LeavesSummaryFragment extends Fragment {
         EditText reason = view.findViewById(R.id.id_display_reason);
         TextView status = view.findViewById(R.id.id_display_status);
         String text = appliedDate.getText().toString();
-        appliedDate.setText(String.format("%s %s", text, String.valueOf(leave.getNoOfDays())));
+        appliedDate.setText(String.format(getString(R.string.strings_append), text, String.valueOf(leave.getNoOfDays())));
         text = date.getText().toString();
-        date.setText(String.format("%s %s", text, getDates(leave)));
+        date.setText(String.format(getString(R.string.strings_append), text, getDates(leave)));
         text = reason.getText().toString();
         reason.setEnabled(false);
-        reason.setText(String.format("%s %s", text, leave.getReason()));
+        reason.setText(String.format(getString(R.string.strings_append), text, leave.getReason()));
         text = status.getText().toString();
-        status.setText(String.format("%s %s", text, leave.getStatus().toString()));
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        status.setText(String.format(getString(R.string.strings_append), text, leave.getStatus().toString()));
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

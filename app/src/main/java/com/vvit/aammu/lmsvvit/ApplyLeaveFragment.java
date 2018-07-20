@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,26 +89,34 @@ public class ApplyLeaveFragment extends Fragment {
         applyLeave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Leave leave = new Leave();
-                leave.setStatus(Leave.Status.APPLIED);
-                Date date = new Date();
-                int year = date.getYear()+1900;
-                String dateString = date.getDate()+"/"+(date.getMonth()+1)+"/"+year;
-                leave.setAppliedDate(dateString);
-                leave.setLeaveType(leaveType);
-                leave.setNoOfDays(Integer.parseInt(leavesRequired.getText().toString()));
-                leave.setReason(reason.getText().toString());
-                List<String> datesApplied = new ArrayList<>();
-                for(int i=0;i<leave.getNoOfDays();i++){
-                    year = selectedDates.get(i).getYear()+1900;
-                    dateString = selectedDates.get(i).getDate() +"/"+(selectedDates.get(i).getMonth()+1)+"/"+year;
-                    datesApplied.add(dateString);
+                if(selectedDates!=null) {
+                    Leave leave = new Leave();
+                    leave.setStatus(Leave.Status.APPLIED);
+                    Date date = new Date();
+                    int year = date.getYear() + 1900;
+                    String dateString = date.getDate() + "/" + (date.getMonth() + 1) + "/" + year;
+                    leave.setAppliedDate(dateString);
+                    leave.setLeaveType(leaveType);
+                    leave.setNoOfDays(Integer.parseInt(leavesRequired.getText().toString()));
+                    leave.setReason(reason.getText().toString());
+                    if(selectedDates.size()==leave.getNoOfDays()) {
+                        List<String> datesApplied = new ArrayList<>();
+                        for (int i = 0; i < leave.getNoOfDays(); i++) {
+                            year = selectedDates.get(i).getYear() + 1900;
+                            dateString = selectedDates.get(i).getDate() + "/" + (selectedDates.get(i).getMonth() + 1) + "/" + year;
+                            datesApplied.add(dateString);
+                        }
+                        leave.setDate(datesApplied);
+                        leave.toString();
+                        firebaseUtils.addLeave(employee, leave);
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                    else
+                        Toast.makeText(getActivity(), getString(R.string.select)+leave.getNoOfDays()+getString(R.string.days), Toast.LENGTH_SHORT).show();
                 }
-                leave.setDate(datesApplied);
-                leave.toString();
-                firebaseUtils.addLeave(employee,leave);
-                getActivity().getSupportFragmentManager().popBackStack();
+                else{
+                    Toast.makeText(getActivity(), R.string.select_dates_pleas, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         cancelLeave.setOnClickListener(new View.OnClickListener() {
@@ -143,24 +150,30 @@ public class ApplyLeaveFragment extends Fragment {
                 if(dayCount> Integer.parseInt(leavesRequired.getText().toString()))
                     Toast.makeText(getActivity(), R.string.error,Toast.LENGTH_SHORT).show();
                 else {
-                    if (selectedDates.size() == 1) {
-                        stringBuilder.append(selectedDates.get(0).getDate());
-                        stringBuilder.append(" / ");
-                        stringBuilder.append(selectedDates.get(0).getMonth()+1);
-                        stringBuilder.append(" / ");
-                        stringBuilder.append(selectedDates.get(0).getYear()+1900);
-                    } else {
-                        stringBuilder.append(selectedDates.get(0).getDate());
-                        stringBuilder.append(" / ");
-                        stringBuilder.append(selectedDates.get(0).getMonth()+1);
-                        stringBuilder.append(" / ");
-                        stringBuilder.append(selectedDates.get(0).getYear()+1900);
-                        stringBuilder.append(" - ");
-                        stringBuilder.append(selectedDates.get(selectedDates.size() - 1).getDate());
-                        stringBuilder.append(" / ");
-                        stringBuilder.append(selectedDates.get(selectedDates.size() - 1).getMonth()+1);
-                        stringBuilder.append(" / ");
-                        stringBuilder.append(selectedDates.get(selectedDates.size() - 1).getYear()+1900);
+                    switch (selectedDates.size()) {
+                        case 0:
+                            Toast.makeText(getActivity(), R.string.a_day_least, Toast.LENGTH_SHORT).show();
+                            break;
+                        case 1:
+                            stringBuilder.append(selectedDates.get(0).getDate());
+                            stringBuilder.append(" / ");
+                            stringBuilder.append(selectedDates.get(0).getMonth() + 1);
+                            stringBuilder.append(" / ");
+                            stringBuilder.append(selectedDates.get(0).getYear() + 1900);
+                            break;
+                        default:
+                            stringBuilder.append(selectedDates.get(0).getDate());
+                            stringBuilder.append(" / ");
+                            stringBuilder.append(selectedDates.get(0).getMonth() + 1);
+                            stringBuilder.append(" / ");
+                            stringBuilder.append(selectedDates.get(0).getYear() + 1900);
+                            stringBuilder.append(" - ");
+                            stringBuilder.append(selectedDates.get(selectedDates.size() - 1).getDate());
+                            stringBuilder.append(" / ");
+                            stringBuilder.append(selectedDates.get(selectedDates.size() - 1).getMonth() + 1);
+                            stringBuilder.append(" / ");
+                            stringBuilder.append(selectedDates.get(selectedDates.size() - 1).getYear() + 1900);
+                            break;
                     }
                     appliedDates.setText(stringBuilder);
                 }

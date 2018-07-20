@@ -1,7 +1,5 @@
 package com.vvit.aammu.lmsvvit;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,11 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,27 +25,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.model.Leave;
-import com.vvit.aammu.lmsvvit.model.Leaves;
-import com.vvit.aammu.lmsvvit.utils.ApplicantAdapter;
 import com.vvit.aammu.lmsvvit.utils.EmployeeListAdapter;
 import com.vvit.aammu.lmsvvit.utils.FirebaseUtils;
-import com.vvit.aammu.lmsvvit.utils.MyAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
 
 import static android.view.View.GONE;
 
 
 public class HomeFragment extends Fragment {
-    //Unbinder unbinder;
-    //@BindView(R.id.id_casual_available)
     TextView casualLeaves,casualBalance;
-   // @BindView(R.id.id_sick_available)
     TextView sickLeaves,sickBalance,name;
 
-    private static final String KEY_LEAVE_LIST = "leaves/leave";
     private Fragment fragment;
     RecyclerView recyclerView;
     LinearLayout layout;
@@ -59,9 +47,7 @@ public class HomeFragment extends Fragment {
     private DatabaseReference mFirebaseDatabase;
     private Employee employee;
     private List<Employee> employeeList;
-    private List<Leave> leaveList;
 
-    // @BindView(R.id.id_permission)
     public HomeFragment() {
     }
 
@@ -78,6 +64,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view= inflater.inflate(R.layout.fragment_home, container, false);
         Bundle bundle=getArguments();
         name = view.findViewById(R.id.id_home_name);
@@ -99,7 +86,7 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.id_employee_list);
         adView = view.findViewById(R.id.adView);
         String text = name.getText().toString();
-        name.setText(String.format("%s %s", text, employee.getName()));
+        name.setText(String.format(getString(R.string.strings_append), text, employee.getName()));
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +105,7 @@ public class HomeFragment extends Fragment {
                 */
                 .build();
         adView.loadAd(request);
-        if(employee.getDesignation().equalsIgnoreCase("HOD")){
+        if(employee.getDesignation().equalsIgnoreCase(getString(R.string.hod))){
             layout.setVisibility(GONE);
             recyclerView.setVisibility(View.VISIBLE);
             fab.setVisibility(GONE);
@@ -152,7 +139,7 @@ public class HomeFragment extends Fragment {
                                 }
 
                                 if (employeeList.size() <= 0) {
-                                    Toast.makeText(getActivity(), "No Faculty Applied for Leaves", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.no_faculty_applied, Toast.LENGTH_SHORT).show();
                                     getActivity().getSupportFragmentManager().popBackStack();
                                 }
                             }
@@ -168,9 +155,8 @@ public class HomeFragment extends Fragment {
             });
         }
         else
-            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-        Log.i("FirebaseUtils","Calling Adapter");
-        adapter = new EmployeeListAdapter(employeeList,getActivity(), new EmployeeListAdapter.OnItemClickListener() {
+            Toast.makeText(getActivity(), R.string.no_internet, Toast.LENGTH_SHORT).show();
+       adapter = new EmployeeListAdapter(employeeList,getActivity(), new EmployeeListAdapter.OnItemClickListener() {
             @Override
             public void onItemClickListener(Leave leave) {
 
@@ -191,17 +177,16 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(fragment==null && savedInstanceState!=null)
-            fragment=this.getChildFragmentManager().getFragment(savedInstanceState,"HomeFragment");
+            fragment=this.getChildFragmentManager().getFragment(savedInstanceState,getString(R.string.home_frag));
 
     }
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if(fragment!=null)
-            getChildFragmentManager().putFragment(outState,"HomeFragment",fragment);
+            getChildFragmentManager().putFragment(outState,getString(R.string.home_frag),fragment);
 
     }
-
 
 
 }

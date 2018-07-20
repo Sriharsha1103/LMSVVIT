@@ -1,13 +1,9 @@
 package com.vvit.aammu.lmsvvit;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,26 +16,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.utils.FirebaseUtils;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
 public class PersonalFragment extends Fragment {
     Unbinder unbinder;
-    //@BindView(R.id.id_personal_name)
     EditText name;
-    //@BindView(R.id.id_personal_department)
     EditText department;
-    //@BindView(R.id.id_personal_designation)
     EditText designation;
-    //@BindView(R.id.id_personal_email)
     EditText email;
-   // @BindView(R.id.id_radio_gender)
     RadioGroup gender;
-    //@BindView(R.id.id_radio_male)
     RadioButton male;
-    //@BindView(R.id.id_radio_female)
     RadioButton female;
     Button save,cancel;
     FirebaseUtils firebaseUtils;
@@ -122,9 +110,4 @@ public class PersonalFragment extends Fragment {
         return view;
     }
 
-   /* @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getActivity().getSupportFragmentManager().popBackStack();
-    }*/
 }

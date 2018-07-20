@@ -40,7 +40,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_margin="@dimen/margin_apply_leave"
-                    android:paddingLeft="@dimen/padding">
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
+                    android:paddingEnd="@dimen/padding">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -56,7 +59,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_margin="@dimen/margin_apply_leave"
-                    android:paddingLeft="@dimen/padding">
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
+                    android:paddingEnd="@dimen/padding">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -72,6 +78,9 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingLeft="@dimen/padding"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
+                    android:paddingEnd="@dimen/padding"
                     android:layout_margin="@dimen/margin_apply_leave">
                     <TextView
                         android:layout_width="wrap_content"
@@ -89,7 +98,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_margin="@dimen/margin_apply_leave"
-                    android:paddingLeft="@dimen/padding">
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
+                    android:paddingEnd="@dimen/padding">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -121,7 +133,8 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_add"
         tools:ignore="VectorDrawableCompat"
-        android:elevation="@dimen/card_view_max_elevation"/>
+        android:elevation="@dimen/card_view_max_elevation"
+        tools:targetApi="lollipop" />
 
     <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"

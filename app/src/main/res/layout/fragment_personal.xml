@@ -33,7 +33,7 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Username"
+                            android:hint="@string/username"
                             android:id="@+id/id_personal_name"
                             />
                     </android.support.design.widget.TextInputLayout>
@@ -51,7 +51,7 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Department"
+                            android:hint="@string/department"
                             android:id="@+id/id_personal_department"
                             android:textColorHint="@android:color/holo_blue_dark"
                             />
@@ -70,7 +70,7 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Designation"
+                            android:hint="@string/designation"
                             android:id="@+id/id_personal_designation"
                             android:textColorHint="@android:color/holo_blue_dark"
                             />
@@ -89,7 +89,7 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="emailId"
+                            android:hint="@string/emailid"
                             android:editable="false"
                             android:id="@+id/id_personal_email"
                             android:textColorHint="@android:color/holo_blue_dark"
@@ -104,26 +104,25 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Gender:"
+                        android:text="@string/gender"
                         android:padding="@dimen/padding"
                         android:layout_margin="@dimen/margin_apply_leave"/>
                     <RadioGroup
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/padding"
-                        android:id="@+id/id_radio_gender">
+                        android:padding="@dimen/padding">
                         <RadioButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Male"
+                            android:text="@string/male"
                             android:id="@+id/id_radio_male"
                             android:layout_margin="@dimen/margin_apply_leave"/>
                         <RadioButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_apply_leave"
-                            android:text="Female"
+                            android:text="@string/female"
                             android:id="@+id/id_radio_female"/>
                     </RadioGroup>
                 </LinearLayout>
@@ -137,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/id_cancel"
-                        android:text="Cancel"
+                        android:text="@string/cancel"
                         android:layout_marginStart="@dimen/margin_apply_leave"
                         android:layout_marginRight="@dimen/margin_apply_leave"
                         android:layout_gravity="center"
@@ -147,7 +146,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/id_save"
-                        android:text="Save"
+                        android:text="@string/save"
                         android:layout_marginStart="@dimen/margin_apply_leave"
                         android:layout_marginRight="@dimen/margin_apply_leave"
                         android:layout_gravity="center"

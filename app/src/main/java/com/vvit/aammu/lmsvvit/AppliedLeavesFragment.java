@@ -8,8 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,18 +22,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.model.Leave;
-import com.vvit.aammu.lmsvvit.model.Leaves;
 import com.vvit.aammu.lmsvvit.utils.FirebaseUtils;
 import com.vvit.aammu.lmsvvit.utils.MyAdapter;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class AppliedLeavesFragment extends Fragment
-        //implements LoaderManager.LoaderCallbacks<List<Leave>>
 {
     private static final String KEY_LEAVE_LIST = "leaves/leave";
     private MyAdapter adapter;
@@ -97,7 +90,6 @@ public class AppliedLeavesFragment extends Fragment
                                             childCount++;
                                             adapter.notifyDataSetChanged();
                                         }
-                                        Log.i("Size List Apply",""+leavesList.size());
                                         if (leavesList.size() <= 0) {
                                             Toast.makeText(getActivity(), R.string.no_leaves_applied, Toast.LENGTH_SHORT).show();
                                             getActivity().getSupportFragmentManager().popBackStack();
@@ -145,15 +137,15 @@ public class AppliedLeavesFragment extends Fragment
         EditText reason = view.findViewById(R.id.id_display_reason);
         TextView status = view.findViewById(R.id.id_display_status);
         String text = appliedDate.getText().toString();
-        appliedDate.setText(String.format("%s %s", text, String.valueOf(leave.getNoOfDays())));
+        appliedDate.setText(String.format(getActivity().getString(R.string.strings_append), text, String.valueOf(leave.getNoOfDays())));
         text = date.getText().toString();
-        date.setText(String.format("%s %s", text, getDates(leave)));
+        date.setText(String.format(getActivity().getString(R.string.strings_append), text, getDates(leave)));
         text = reason.getText().toString();
         reason.setEnabled(false);
-        reason.setText(String.format("%s %s", text, leave.getReason()));
+        reason.setText(String.format(getActivity().getString(R.string.strings_append), text, leave.getReason()));
         text = status.getText().toString();
-        status.setText(String.format("%s %s", text, leave.getStatus().toString()));
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        status.setText(String.format(getActivity().getString(R.string.strings_append), text, leave.getStatus().toString()));
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

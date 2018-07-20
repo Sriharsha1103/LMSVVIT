@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-    //private final RecyclerView.RecycledViewPool viewPool;
     private List<Employee> employeeList;
     private Activity activity;
     private OnItemClickListener listener;
@@ -37,8 +35,6 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.activity = activity;
         this.listener = listener;
 
-        Log.i("ELA","EmployeeList"+employeeList.size());
-        //viewPool = new RecyclerView.RecycledViewPool();
     }
 
     public interface OnItemClickListener{
@@ -55,7 +51,6 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-       // ((ViewHolder) holder).emp_list.setRecycledViewPool(viewPool);
         Employee employee = employeeList.get(position);
         viewHolder.bind(employee,listener);
     }
@@ -84,7 +79,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public void bind(Employee employee, final OnItemClickListener listener) {
             emp_name.setText(employee.getName());
             String text = emp_leaves.getText().toString();
-            emp_leaves.setText(String.format("%s %d", text, employee.getLeaves().getcls()));
+            emp_leaves.setText(String.format(activity.getString(R.string.strings_append), text,String.valueOf(employee.getLeaves().getcls())));
             firebaseUtils = new FirebaseUtils(activity,adapter);
             setUpAdapter(employee);
 
@@ -111,8 +106,6 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                                 if (leave.getStatus().equals(Leave.Status.ACCEPTED)) {
                                                     leavesList.add(leave);
                                                     adapter.notifyDataSetChanged();
-                                                    Log.i("ELA","LeaveList"+leavesList.size());
-                                                    leavesList.get(childCount-1).display();
                                                 }
 
                                                 childCount++;

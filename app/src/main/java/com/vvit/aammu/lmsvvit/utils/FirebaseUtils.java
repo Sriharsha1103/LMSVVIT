@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.vvit.aammu.lmsvvit.R;
 import com.vvit.aammu.lmsvvit.model.Employee;
 import com.vvit.aammu.lmsvvit.model.Leave;
 import com.vvit.aammu.lmsvvit.model.Leaves;
+import com.vvit.aammu.lmsvvit.widget.WidgetService;
 
 import java.util.List;
 
@@ -50,10 +52,7 @@ public class FirebaseUtils {
     Boolean flag;
     private MyAdapter adapter;
 
-    public FirebaseUtils(Activity activity, ApplicantAdapter applicantAdapter) {
-        this.activity = activity;
-        this.applicantAdapter = applicantAdapter;
-    }
+   
 
     private ApplicantAdapter applicantAdapter;
 
@@ -64,6 +63,14 @@ public class FirebaseUtils {
 
     public FirebaseUtils(Activity activity, DatabaseReference databaseReference) {
         this.activity = activity;
+    }
+
+
+    public FirebaseUtils(FragmentActivity activity, ApplicantAdapter adapter) {
+    }
+
+    public FirebaseUtils(Activity activity) {
+        this.activity=activity;
     }
 
     public void updatePersonalInfo(final Employee employee1) {
@@ -126,6 +133,7 @@ public class FirebaseUtils {
     }
 
     public void fetchData(final String emailId) {
+        Log.i("LMSApp","FirebaseUtils - fetchData");
         if (checkNetwork()) {
             final ProgressDialog progressDialog = new ProgressDialog(activity);
             progressDialog.setMessage(activity.getString(R.string.fetching_data));
@@ -144,8 +152,9 @@ public class FirebaseUtils {
                             employee.setLeaves(leaves);
                             Intent intent = new Intent(activity, HomeActivity.class);
                             intent.putExtra(KEY_EMPLOYEE, employee);
-                            activity.startActivity(intent);
                             activity.finish();
+                            activity.startActivity(intent);
+                            activity.startService(new Intent(activity, WidgetService.class));
                             break;
                         }
                         i++;
@@ -215,8 +224,7 @@ public class FirebaseUtils {
                                         int childCount = 1;
                                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                                             Leave leave = data.child(KEY_LEAVES_LIST).child(String.valueOf(childCount)).getValue(Leave.class);
-                                            leave.display();
-                                            if (leave.getStatus().equals(Leave.Status.APPLIED) && status.equals(Leave.Status.ACCEPTED)) {
+                                           if (leave.getStatus().equals(Leave.Status.APPLIED) && status.equals(Leave.Status.ACCEPTED)) {
                                                 if (leave.getLeaveType().equalsIgnoreCase("Casual Leaves")) {
                                                     int count = employee1.getLeaves().getcls();
                                                     count = count - leave.getNoOfDays();
@@ -260,7 +268,7 @@ public class FirebaseUtils {
             });
         } else {
             flag = false;
-            Toast.makeText(activity, "No Internet, Check Network Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -277,7 +285,7 @@ public class FirebaseUtils {
                             for (int i = 1; i < leaves.size(); i++) {
                                 if (leaves.get(i).getStatus().equals(Leave.Status.APPLIED)) {
                                     String title = employee.getName();
-                                    String body = "Applied leave for " + leaves.get(i).getNoOfDays() + " days";
+                                    String body = activity.getString(R.string.applied_leave_for) +" "+ String.valueOf(leaves.get(i).getNoOfDays()) +" " +activity.getString(R.string.days);
                                     MyNotificationManager.getInstance(activity, employee).displayNotification(title, body);
                                 }
                             }
@@ -292,7 +300,7 @@ public class FirebaseUtils {
                 }
             });
         } else
-            Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.no_internet, Toast.LENGTH_SHORT).show();
 
     }
 

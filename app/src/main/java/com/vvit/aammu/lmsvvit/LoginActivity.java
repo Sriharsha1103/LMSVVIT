@@ -34,7 +34,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         prefManager = new PrefManager(this);
         if (!prefManager.isFirstTimeLogin()) {
             launchHomeScreen();
@@ -49,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
                 final String email = inputEmail.getText().toString();
                 final String password = inputPassword.getText().toString();
                 if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password))
-                    Toast.makeText(LoginActivity.this,"Please type emailId/Password",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, R.string.type_password,Toast.LENGTH_SHORT).show();
                 else {
                     prefManager.setUserEmail(email);
                     prefManager.setFirstTimeLogin(false);

@@ -77,8 +77,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         public void bind(final Leave currentLeave, final OnItemClickListener listener) {
-            //FirebaseUtils firebaseUtils = new FirebaseUtils(activity,FirebaseDatabase.getInstance().getReference());
-            currentLeave.display();
             switch(currentLeave.getStatus()){
                 case APPLIED:
                     imageView.setImageResource(R.drawable.ic_visibility_off);
@@ -94,9 +92,9 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     break;
             }
             String text = appliedDates.getText().toString();
-            appliedDates.setText(text+ " "+currentLeave.getAppliedDate());
+            appliedDates.setText(String.format(activity.getString(R.string.strings_append), text, currentLeave.getAppliedDate()));
             text = noOfDaysApplied.getText().toString();
-            noOfDaysApplied.setText(text+" "+String.valueOf(currentLeave.getNoOfDays()));
+            noOfDaysApplied.setText(String.format(activity.getString(R.string.strings_append), text, String.valueOf(currentLeave.getNoOfDays())));
             itemView.setOnClickListener(new View.OnClickListener() {
 
                 @Override

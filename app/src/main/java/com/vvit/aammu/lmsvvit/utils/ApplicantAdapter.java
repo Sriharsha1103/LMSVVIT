@@ -14,7 +14,6 @@ import com.vvit.aammu.lmsvvit.model.Leave;
 
 import java.util.List;
 
-import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -89,12 +88,12 @@ public class ApplicantAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     for (int i = 1; i < leaves.size(); i++) {
                         if (leaves.get(i).getStatus().equals(Leave.Status.APPLIED)) {
                             String text = appliedDate.getText().toString();
-                            appliedDate.setText(String.format("%s %s", text, leaves.get(i).getAppliedDate()));
+                            appliedDate.setText(String.format(activity.getString(R.string.strings_append), text, leaves.get(i).getAppliedDate()));
                             text = noOfDaysApplied.getText().toString();
-                            noOfDaysApplied.setText(String.format("%s %d", text, leaves.get(i).getNoOfDays()));
+                            noOfDaysApplied.setText(String.format(activity.getString(R.string.strings_append), text, String.valueOf(leaves.get(i).getNoOfDays())));
                             leave = leaves.get(i);
                             text = leaveStatus.getText().toString();
-                            leaveStatus.setText(String.format("%s %s", text, leave.getStatus()));
+                            leaveStatus.setText(String.format(activity.getString(R.string.strings_append), text, leave.getStatus()));
                         }
                     }
                 }

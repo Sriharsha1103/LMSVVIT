@@ -2,7 +2,6 @@ package com.vvit.aammu.lmsvvit.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -36,7 +35,6 @@ public class Leaves implements Parcelable{
         mls = in.readInt();
 
         sls = in.readInt();
-        //leaveList = in.createTypedArrayList(Leave.CREATOR);
     }
 
     public static final Creator<Leaves> CREATOR = new Creator<Leaves>() {
@@ -94,14 +92,7 @@ public class Leaves implements Parcelable{
         dest.writeInt(cls);
         dest.writeInt(mls);
         dest.writeInt(sls);
-      //  dest.writeTypedList(leaveList);
     }
 
-    @Override
-    public String toString() {
-        Log.i("CLS=",""+getcls());
-        Log.i("MLS",""+getmls());
-        Log.i("SLS",""+getsls());
-        return super.toString();
-    }
+
 }

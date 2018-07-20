@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,8 +46,8 @@ public class HomeActivity extends AppCompatActivity
     private Bundle bundle;
     private Fragment fragment;
     private FirebaseUtils firebaseUtils;
-    private boolean flag;
-
+    private SharedPreferences sharedPreferences;
+    private static long back_pressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,19 +55,19 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         ButterKnife.bind(this);
         prefManager = new PrefManager(this);
         bundle = getIntent().getExtras();
-        employee=bundle.getParcelable("employee");
-        String notificationFragment = getIntent().getStringExtra("notificationFragment");
+        employee=bundle.getParcelable(getString(R.string.employee));
+        sharedPreferences = getSharedPreferences(getString(R.string.my_pref),0);
+        String notificationFragment = getIntent().getStringExtra(getString(R.string.notfyFrag));
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel mChannel = new NotificationChannel("1", "Notification", importance);
-            mChannel.setDescription("Description");
+            NotificationChannel mChannel = new NotificationChannel("1", getString(R.string.notification), importance);
+            mChannel.setDescription(getString(R.string.description));
             mChannel.enableLights(true);
             mChannel.setLightColor(Color.RED);
             mChannel.enableVibration(true);
@@ -100,17 +101,17 @@ public class HomeActivity extends AppCompatActivity
         if(savedInstanceState!=null){
             if(fragment!=null){
                 if(fragment instanceof AppliedLeavesFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState,"LeavesFragment");
+                    getSupportFragmentManager().getFragment(savedInstanceState,getString(R.string.leavesFrag));
                 else if(fragment instanceof ApplyLeaveFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState,"ApplyFragment");
+                    getSupportFragmentManager().getFragment(savedInstanceState,getString(R.string.apply_frag));
                 else if(fragment instanceof HomeFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState,"HomeFragment");
+                    getSupportFragmentManager().getFragment(savedInstanceState,getString(R.string.home_frag));
                 else if(fragment instanceof PersonalFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState,"PersonalFragment");
+                    getSupportFragmentManager().getFragment(savedInstanceState,getString(R.string.personal_frag));
                 else if(fragment instanceof LeaveApplicantsFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState,"ApplicantsFragment");
+                    getSupportFragmentManager().getFragment(savedInstanceState,getString(R.string.applicants_frag));
                 else if(fragment instanceof LeavesSummaryFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState,"SummaryFragment");
+                    getSupportFragmentManager().getFragment(savedInstanceState,getString(R.string.summary_frag));
 
             }
         }
@@ -123,7 +124,6 @@ public class HomeActivity extends AppCompatActivity
         }
         else{
             fragment = LeaveApplicantsFragment.newInstance();
-           // fragment.setArguments(bundle);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.id_frame_layout, fragment);
             fragmentTransaction.commit();
@@ -133,12 +133,15 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            finish();
         }
+
     }
 
     @Override
@@ -172,16 +175,16 @@ public class HomeActivity extends AppCompatActivity
 
     private void changePassword() {
         AlertDialog.Builder dialog= new AlertDialog.Builder(this);
-        dialog.setTitle("Change Password");
+        dialog.setTitle(R.string.change_password);
         View view = LayoutInflater.from(this).inflate(R.layout.change_password,null);
         final EditText password = view.findViewById(R.id.id_change_password);
         final EditText password2 = view.findViewById(R.id.id_change_password2);
         dialog.setView(view);
-        dialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(TextUtils.isEmpty(password.getText().toString()) || TextUtils.isEmpty(password2.getText().toString()))
-                    Toast.makeText(getApplicationContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.fileds_empty, Toast.LENGTH_SHORT).show();
                 if(password.getText().toString().equals(password2.getText().toString())){
                     if(firebaseUtils.checkNetwork()){
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -192,9 +195,8 @@ public class HomeActivity extends AppCompatActivity
                                 for(DataSnapshot data:dataSnapshot.getChildren()){
                                     Employee employee = data.getValue(Employee.class);
                                     if(employee.getEmailId().equals(prefManager.getUserEmail())){
-                                        data.getRef().child("password").setValue(password.getText().toString());
-                                        flag = true;
-                                        break;
+                                        data.getRef().child(getString(R.string.password)).setValue(password.getText().toString());
+                                         break;
                                     }
                                     i++;
                                 }
@@ -203,21 +205,20 @@ public class HomeActivity extends AppCompatActivity
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
-                                flag = false;
-                            }
+                                 }
                         });
                     }
                     else{
-                        Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.no_internet, Toast.LENGTH_SHORT).show();
 
                     }
                 }
                 else{
-                    Toast.makeText(HomeActivity.this, "Retype password should be same as password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, R.string.password_retype, Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -249,7 +250,7 @@ public class HomeActivity extends AppCompatActivity
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.id_frame_layout,fragment);
-        fragmentTransaction.addToBackStack("Fragment");
+        fragmentTransaction.addToBackStack(getString(R.string.fragment));
         fragmentTransaction.commit();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -261,17 +262,17 @@ public class HomeActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
         if(fragment!=null){
             if(fragment instanceof AppliedLeavesFragment)
-                getSupportFragmentManager().putFragment(outState,"LeavesFragment",fragment);
+                getSupportFragmentManager().putFragment(outState,getString(R.string.leavesFrag),fragment);
             else if(fragment instanceof ApplyLeaveFragment)
-                getSupportFragmentManager().putFragment(outState,"ApplyFragment",fragment);
+                getSupportFragmentManager().putFragment(outState,getString(R.string.apply_frag),fragment);
             else if(fragment instanceof HomeFragment)
-                getSupportFragmentManager().putFragment(outState,"HomeFragment",fragment);
+                getSupportFragmentManager().putFragment(outState,getString(R.string.home_frag),fragment);
             else if(fragment instanceof PersonalFragment)
-                getSupportFragmentManager().putFragment(outState,"PersonalFragment",fragment);
+                getSupportFragmentManager().putFragment(outState,getString(R.string.personal_frag),fragment);
             else if(fragment instanceof LeaveApplicantsFragment)
-                getSupportFragmentManager().putFragment(outState,"ApplicantsFragment",fragment);
+                getSupportFragmentManager().putFragment(outState,getString(R.string.applicants_frag),fragment);
             else if(fragment instanceof LeavesSummaryFragment)
-                getSupportFragmentManager().putFragment(outState,"SummaryFragment",fragment);
+                getSupportFragmentManager().putFragment(outState,getString(R.string.summary_frag),fragment);
 
         }
     }

@@ -116,16 +116,6 @@ public class Employee implements Parcelable{
 
     }
 
-    @Override
-    public String toString() {
-        Log.i("Printing Details","....");
-        Log.i("Name:",getName());
-        Log.i("Gender:",getGender());
-        Log.i("emailID:",getEmailId());
-        Log.i("Password:",getPassword());
-        Log.i("Leaves",getLeaves().toString());
-        return super.toString();
-    }
 
     @Override
     public int describeContents() {

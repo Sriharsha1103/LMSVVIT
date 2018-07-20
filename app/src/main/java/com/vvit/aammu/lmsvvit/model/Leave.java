@@ -1,10 +1,7 @@
 package com.vvit.aammu.lmsvvit.model;
 
-import android.util.Log;
-
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.Date;
 import java.util.List;
 
 @IgnoreExtraProperties
@@ -27,15 +24,7 @@ public class Leave {
         return null;
     }
 
-    public void display(){
 
-        Log.i("Leave Days:",""+getNoOfDays());
-        Log.i("Leave Reason",getReason());
-        Log.i("Leave","status"+status.values());
-        Log.i("Leave","Type"+getLeaveType());
-        for(int i=0;i<getDate().size();i++)
-            Log.i("Leave Date: ",date.get(i).toString());
-    }
 
     public List<String> getDate() {
         return date;
